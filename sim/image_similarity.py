@@ -84,7 +84,9 @@ def pixel_cosine_similarity(p1_path, p2_path):
         img_cache_dict[p1_path] = imgA
         imgA_vector = []
         for pixel_tuple in imgA.getdata():
-            imgA_vector.append(average(pixel_tuple))
+            imgA_vector.append(pixel_tuple[0])
+            imgA_vector.append(pixel_tuple[1])
+            imgA_vector.append(pixel_tuple[2])
         img_vector_cache_dict[p1_path] = imgA_vector
         imgA_norm = linalg.norm(imgA_vector, 2)
         img_norm_cache_dict[p1_path] = imgA_norm
@@ -100,7 +102,9 @@ def pixel_cosine_similarity(p1_path, p2_path):
         img_cache_dict[p2_path] = imgB
         imgB_vector = []
         for pixel_tuple in imgB.getdata():
-            imgB_vector.append(average(pixel_tuple))
+            imgB_vector.append(pixel_tuple[0])
+            imgB_vector.append(pixel_tuple[1])
+            imgB_vector.append(pixel_tuple[2])
         img_vector_cache_dict[p2_path] = imgB_vector
         imgB_norm = linalg.norm(imgB_vector, 2)
         img_norm_cache_dict[p2_path] = imgB_norm
