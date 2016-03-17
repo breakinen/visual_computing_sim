@@ -30,12 +30,16 @@ dim = len(column['FileName'])
 
 histogram_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
 cosine_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
+ghc_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
 
 hist_output_file = open('photos/sim_info_hist.csv', 'w')
 hist_writer = csv.writer(hist_output_file)
 
 cosine_output_file = open('photos/sim_info_cosine.csv', 'w')
 cosine_writer = csv.writer(cosine_output_file)
+
+ghc_output_file = open('photos/sim_info_ghc.csv', 'w')
+ghc_writer = csv.writer(ghc_output_file)
 
 photo_path="photos/"
 
@@ -48,9 +52,12 @@ for i in range(len(column['FileName'])):
         # photo_tag_2 = column['Tags'][j]
         histogram_similarity = imsi.histogram_similarity(photo1, photo2)
         cosine_similarity = imsi.pixel_cosine_similarity(photo1, photo2)
+        ghc_similarity = imsi.ghc_similarity(photo1, photo2)
         # similarity = jaccard_similarity(photo_tag_1,photo_tag_2)
         histogram_similarity_matrix[i][j] = histogram_similarity
         cosine_similarity_matrix[i][j] = cosine_similarity
+        ghc_similarity_matrix[i][j] = ghc_similarity
 
 hist_writer.writerows(histogram_similarity_matrix)
 cosine_writer.writerows(cosine_similarity_matrix)
+ghc_writer.writerows(ghc_similarity_matrix)

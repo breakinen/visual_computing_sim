@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG, format=format)
 logger = logging.getLogger(__name__)
 
 img_cache_dict = {}
+img_gray_cache_dict = {}
 img_vector_cache_dict = {}
 img_norm_cache_dict = {}
 
@@ -113,6 +114,50 @@ def pixel_cosine_similarity(p1_path, p2_path):
 
     res = dot(imgA_vector / imgA_norm, imgB_vector / imgB_norm)
     return res
+
+def ghc_similarity(p1_path, p2_path):
+    resize_size = (50, 50)
+
+    if p1_path in img_gray_cache_dict:
+        imgA = img_gray_cache_dict[p1_path]
+    else:
+        imgA = Image.open(p1_path)
+        imgA = imgA.resize(resize_size)
+        imgA = imgA.convert("L")
+        img_gray_cache_dict[p1_path] = imgA
+        print("adding to cache: " + p1_path)
+
+    if p2_path in img_gray_cache_dict:
+        imgB = img_gray_cache_dict[p2_path]
+    else:
+        imgB = Image.open(p2_path)
+        imgB = imgB.resize(resize_size)
+        imgB = imgB.convert("L")
+        img_gray_cache_dict[p2_path] = imgB
+        print("adding to cache: " + p2_path)
+
+    code1 = img_hashcode(imgA)
+    code2 = img_hashcode(imgB)
+    res = hamming_distance(code1,code2)
+    return res
+
+def img_hashcode(image):
+    pixels = list(image.getdata())
+    avg = sum(pixels) / len(pixels)
+    bits = "".join(map(lambda pixel: '1' if pixel < avg else '0', pixels))  # '00010100...'
+    hexadecimal = int(bits, 2).__format__('016x').upper()
+    return hexadecimal
+
+def hamming_distance(s1, s2):
+    len1, len2= len(s1),len(s2)
+    if len1!=len2:
+        "hamming distance works only for string of the same length, so i'll chop the longest sequence"
+        if len1>len2:
+            s1=s1[:-(len1-len2)]
+        else:
+            s2=s2[:-(len2-len1)]
+    assert len(s1) == len(s2)
+    return sum([ch1 != ch2 for ch1, ch2 in zip(s1, s2)])
 
 
 if __name__ == "__main__":
