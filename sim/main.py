@@ -12,7 +12,8 @@ def jaccard_similarity(string_a, string_b):
 import csv
 from sim import image_similarity as imsi
 
-f = open('photos/info.csv', 'rU')
+dir = "/run/media/liwang/Other/photos/xiphoto/test/"
+f = open('%sinfo.csv' % dir, 'rU')
 reader = csv.reader(f)
 headers = reader.__next__()
 print(headers)
@@ -32,22 +33,22 @@ histogram_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
 cosine_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
 ghc_similarity_matrix = [[0 for x in range(dim)] for x in range(dim)]
 
-hist_output_file = open('photos/sim_info_hist.csv', 'w')
+hist_output_file = open('%s/sim_info_hist.csv' % dir, 'w')
 hist_writer = csv.writer(hist_output_file)
 
-cosine_output_file = open('photos/sim_info_cosine.csv', 'w')
+cosine_output_file = open('%ssim_info_cosine.csv' % dir, 'w')
 cosine_writer = csv.writer(cosine_output_file)
 
-ghc_output_file = open('photos/sim_info_ghc.csv', 'w')
+ghc_output_file = open('%ssim_info_ghc.csv' % dir, 'w')
 ghc_writer = csv.writer(ghc_output_file)
 
-photo_path="photos/"
+photo_path = "photos/"
 
 for i in range(len(column['FileName'])):
     print(i)
     for j in range(len(column['FileName'])):
-        photo1 = photo_path+column['FileName'][i]
-        photo2 = photo_path+column['FileName'][j]
+        photo1 = photo_path + column['FileName'][i]
+        photo2 = photo_path + column['FileName'][j]
         # photo_tag_1 = column['Tags'][i]
         # photo_tag_2 = column['Tags'][j]
         histogram_similarity = imsi.histogram_similarity(photo1, photo2)
