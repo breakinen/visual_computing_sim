@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-
-Installation of needed libraries
-
-sudo apt-get install -y python-pip
-sudo pip install PIL numpy
-
-"""
-
 import os, time, math, operator
 from numpy import average, linalg, dot
 from PIL import Image
@@ -15,8 +5,6 @@ import numpy
 import functools
 import logging
 
-format = '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s() - %(message)s'
-format = '%(asctime)s - %(filename)s:%(lineno)s - %(message)s'
 logging.basicConfig(level=logging.DEBUG, format=format)
 logger = logging.getLogger(__name__)
 
@@ -28,7 +16,7 @@ img_norm_cache_dict = {}
 def main():
     begin_similarty_compare('photos')
 
-
+# Test computing similarity of two images
 def begin_similarty_compare(photo_directory):
     image_filepath1 = '/tue/Q3_VISUAL_COMPUTING/similarity/photos/GED0000.JPG'
     image_filepath2 = '/tue/Q3_VISUAL_COMPUTING/similarity/photos/GED0001.JPG'
@@ -121,17 +109,6 @@ def pixel_cosine_similarity(p1_path, p2_path):
 
     res = dot(imgA_vector / imgA_norm, imgB_vector / imgB_norm)
     return res
-
-
-def get_thumbnail(image, size=(10, 10), stretch_to_fit=False, greyscale=False):
-    " get a smaller version of the image - makes comparison much faster/easier"
-    if not stretch_to_fit:
-        image.thumbnail(size, Image.ANTIALIAS)
-    else:
-        image = image.resize(size);  # for faster computation
-    if greyscale:
-        image = image.convert("L")  # Convert it to grayscale.
-    return image
 
 
 if __name__ == "__main__":
