@@ -20,7 +20,9 @@ format = '%(asctime)s - %(filename)s:%(lineno)s - %(message)s'
 logging.basicConfig(level=logging.DEBUG, format=format)
 logger = logging.getLogger(__name__)
 
-img_cache_dict={}
+img_cache_dict = {}
+img_vector_cache_dict = {}
+img_norm_cache_dict = {}
 
 
 def main():
@@ -37,7 +39,6 @@ def begin_similarty_compare(photo_directory):
 
     duration = "%0.1f" % ((time.time() - t1) * 1000)
     logger.debug("Histogram distance => %s took %s ms" % (similarity, duration))
-
 
     t1 = time.time()
 
@@ -58,8 +59,7 @@ def begin_similarty_compare(photo_directory):
 
 
 def histogram_similarity(p1_path, p2_path):
-
-    resize_size = (50,50)
+    resize_size = (50, 50)
 
     if p1_path in img_cache_dict:
         imgA = img_cache_dict[p1_path]
@@ -67,7 +67,7 @@ def histogram_similarity(p1_path, p2_path):
         imgA = Image.open(p1_path)
         imgA = imgA.resize(resize_size)
         img_cache_dict[p1_path] = imgA
-        print("adding to cache: "+p1_path)
+        print("adding to cache: " + p1_path)
 
     if p2_path in img_cache_dict:
         imgB = img_cache_dict[p2_path]
@@ -75,7 +75,7 @@ def histogram_similarity(p1_path, p2_path):
         imgB = Image.open(p2_path)
         imgB = imgB.resize(resize_size)
         img_cache_dict[p2_path] = imgB
-        print("adding to cache: "+p2_path)
+        print("adding to cache: " + p2_path)
 
     h1 = imgA.histogram()
     h2 = imgB.histogram()
@@ -85,55 +85,43 @@ def histogram_similarity(p1_path, p2_path):
 
 
 def pixel_cosine_similarity(p1_path, p2_path):
+    resize_size = (50, 50)
 
-    resize_size = (50,50)
-
-    if p1_path in img_cache_dict:
+    if p1_path in img_vector_cache_dict:
         imgA = img_cache_dict[p1_path]
+        imgA_vector = img_vector_cache_dict[p1_path]
+        imgA_norm = img_norm_cache_dict[p1_path]
     else:
         imgA = Image.open(p1_path)
         imgA = imgA.resize(resize_size)
         img_cache_dict[p1_path] = imgA
-        print("adding to cache: "+p1_path)
+        imgA_vector = []
+        for pixel_tuple in imgA.getdata():
+            imgA_vector.append(average(pixel_tuple))
+        img_vector_cache_dict[p1_path] = imgA_vector
+        imgA_norm = linalg.norm(imgA_vector, 2)
+        img_norm_cache_dict[p1_path] = imgA_norm
+        print("adding to cache: " + p1_path)
+        print(len(img_vector_cache_dict))
 
-    if p2_path in img_cache_dict:
+    if p2_path in img_vector_cache_dict:
         imgB = img_cache_dict[p2_path]
+        imgB_vector = img_vector_cache_dict[p2_path]
+        imgB_norm = img_norm_cache_dict[p2_path]
     else:
         imgB = Image.open(p2_path)
         imgB = imgB.resize(resize_size)
         img_cache_dict[p2_path] = imgB
-        print("adding to cache: "+p2_path)
+        imgB_vector = []
+        for pixel_tuple in imgB.getdata():
+            imgB_vector.append(average(pixel_tuple))
+        img_vector_cache_dict[p2_path] = imgB_vector
+        imgB_norm = linalg.norm(imgB_vector, 2)
+        img_norm_cache_dict[p2_path] = imgB_norm
+        print("adding to cache: " + p2_path)
+        print(len(img_vector_cache_dict))
 
-    resize_size = (50,50)
-
-    if p1_path in img_cache_dict:
-        imgA = img_cache_dict[p1_path]
-    else:
-        imgA = Image.open(p1_path)
-        imgA = imgA.resize(resize_size)
-        img_cache_dict[p1_path] = imgA
-        print("adding to cache: "+p1_path)
-
-    if p2_path in img_cache_dict:
-        imgB = img_cache_dict[p2_path]
-    else:
-        imgB = Image.open(p2_path)
-        imgB = imgB.resize(resize_size)
-        img_cache_dict[p2_path] = imgB
-        print("adding to cache: "+p2_path)
-
-    images = [imgA, imgB]
-    vectors = []
-    norms = []
-    for image in images:
-        vector = []
-        for pixel_tuple in image.getdata():
-            vector.append(average(pixel_tuple))
-        vectors.append(vector)
-        norms.append(linalg.norm(vector, 2))
-    a, b = vectors
-    a_norm, b_norm = norms
-    res = dot(a / a_norm, b / b_norm)
+    res = dot(imgA_vector / imgA_norm, imgB_vector / imgB_norm)
     return res
 
 
