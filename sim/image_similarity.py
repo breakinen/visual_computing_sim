@@ -88,7 +88,6 @@ def pixel_cosine_similarity(p1_path, p2_path):
     resize_size = (50, 50)
 
     if p1_path in img_vector_cache_dict:
-        imgA = img_cache_dict[p1_path]
         imgA_vector = img_vector_cache_dict[p1_path]
         imgA_norm = img_norm_cache_dict[p1_path]
     else:
@@ -105,7 +104,6 @@ def pixel_cosine_similarity(p1_path, p2_path):
         print(len(img_vector_cache_dict))
 
     if p2_path in img_vector_cache_dict:
-        imgB = img_cache_dict[p2_path]
         imgB_vector = img_vector_cache_dict[p2_path]
         imgB_norm = img_norm_cache_dict[p2_path]
     else:
