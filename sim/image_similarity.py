@@ -68,7 +68,7 @@ def histogram_similarity(p1_path, p2_path):
     h1 = imgA.histogram()
     h2 = imgB.histogram()
 
-    rms = math.sqrt(functools.reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
+    rms = 1-math.sqrt(functools.reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
     return rms
 
 
